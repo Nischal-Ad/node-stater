@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 
 const catchAsync =
   (
-    theFunc: (req: Request, res: Response, next: NextFunction) => Promise<any>
+    theFunc: (req: Request, res: Response, next: NextFunction) => Promise<void>
   ) =>
   (req: Request, res: Response, next: NextFunction) => {
     Promise.resolve(theFunc(req, res, next)).catch(next);

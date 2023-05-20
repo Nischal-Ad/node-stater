@@ -1,8 +1,12 @@
 import { Request, Response } from 'express';
 import ErrorHandler from '../utils/errorHandler';
-import { Error } from 'mongoose';
+import { Error, MongooseError } from 'mongoose';
 
-const errorMiddleware = (err: ErrorHandler, req: Request, res: Response) => {
+interface IError extends ErrorHandler {
+  code?: number;
+}
+
+const errorMiddleware = (err: IError, req: Request, res: Response) => {
   err.statusCode = err.statusCode || 500;
   err.message = err.message || 'Internal Server Error';
 
@@ -13,8 +17,8 @@ const errorMiddleware = (err: ErrorHandler, req: Request, res: Response) => {
   }
 
   // mongoose duplicate key error (MongoError)
-  if (err.code === 11000) {
-    const message = `Duplicate ${Object.keys(err.keyValue)} Entered`;
+  if (err instanceof MongooseError && err.code === 11000) {
+    const message = `Duplicate value Entered`;
     err = new ErrorHandler(message, 400);
   }
 
