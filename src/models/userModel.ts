@@ -1,8 +1,9 @@
-import mongoose, { Model, Schema } from 'mongoose';
+import { InferSchemaType, Schema, model } from 'mongoose';
 import validator from 'validator';
-import { IUser } from './user.model';
 
-const userSchema: Schema<IUser> = new mongoose.Schema({
+type TUser = InferSchemaType<typeof userSchema>;
+
+const userSchema = new Schema({
   name: {
     type: String,
     required: [true, 'please enter your name'],
@@ -23,6 +24,4 @@ const userSchema: Schema<IUser> = new mongoose.Schema({
   },
 });
 
-const User: Model<IUser> = mongoose.model<IUser>('User', userSchema);
-
-export default User;
+export default model<TUser>('User', userSchema);

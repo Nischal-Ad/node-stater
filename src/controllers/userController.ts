@@ -1,14 +1,12 @@
 import catchAsync from '../middleware/catchAsync';
-import User from '../models/userModel/index';
 import ErrorHandler from '../utils/errorHandler';
 
 export const TestUser = catchAsync(async (req, res, next) => {
-  const user = await User.findById(req.params.id);
+  const user = ['dad', 'rams', 'shyam'];
 
-  if (!user) {
-    return next(new ErrorHandler('User not found', 404));
+  if (!user.includes('ram')) {
+    return next(new ErrorHandler('user not found ', 404));
   }
-
   res.status(200).json({
     success: true,
     message: 'this is for test purpose',

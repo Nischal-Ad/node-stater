@@ -11,10 +11,9 @@ const connectDatabase = async () => {
     } as mongoose.MongooseOptions;
 
     if (!dbURI) {
-      return new ErrorHandler('invalid email or password', 404);
+      return new ErrorHandler('there is noo database', 404);
     }
 
-    mongoose;
     await mongoose.connect(dbURI, options);
     console.log('Database connected');
   } catch (error) {

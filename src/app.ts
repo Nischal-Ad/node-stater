@@ -1,5 +1,5 @@
 import express from 'express';
-import Error from './middleware/error';
+import Error from './middleware/error.js';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 
