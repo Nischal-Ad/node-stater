@@ -7,7 +7,7 @@
     "build": "rimraf dist && tsc",
     "prestart": "npm run build",
     "start": "node dist/index.js",
-    "dev": "nodemon index.ts"
+    "dev": "tsnd --respawn -r tsconfig-paths/register --transpile-only index.ts"
   },
   "keywords": [],
   "author": "",
@@ -36,8 +36,8 @@
     "@typescript-eslint/eslint-plugin": "^5.59.6",
     "@typescript-eslint/parser": "^5.59.6",
     "eslint": "^8.40.0",
-    "nodemon": "^2.0.22",
-    "ts-node": "^10.9.1",
+    "ts-node-dev": "^2.0.0",
+    "tsconfig-paths": "^4.2.0",
     "typescript": "^5.0.4"
   }
 }

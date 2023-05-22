@@ -1,5 +1,5 @@
-import catchAsync from '../middleware/catchAsync';
-import ErrorHandler from '../utils/errorHandler';
+import catchAsync from '@Middleware/catchAsync';
+import ErrorHandler from '@Utils/errorHandler';
 
 export const TestUser = catchAsync(async (req, res, next) => {
   const user = ['dad', 'rams', 'shyam'];

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { NextFunction, Request, Response } from 'express';
-import ErrorHandler from '../utils/errorHandler';
+import ErrorHandler from '@Utils/errorHandler';
 import { Error, MongooseError } from 'mongoose';
 
 interface IError extends ErrorHandler {

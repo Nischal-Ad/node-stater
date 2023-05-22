@@ -1,4 +1,4 @@
-import connectDatabase from './src/config/database';
+import connectDatabase from '@Config/database';
 import dotenv from 'dotenv';
 import app from './src/app';
 
