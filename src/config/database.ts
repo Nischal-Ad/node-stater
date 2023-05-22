@@ -1,5 +1,4 @@
 import mongoose, { ConnectOptions } from 'mongoose';
-import ErrorHandler from '../utils/errorHandler';
 
 const connectDatabase = async () => {
   try {
@@ -11,7 +10,7 @@ const connectDatabase = async () => {
     } as mongoose.MongooseOptions;
 
     if (!dbURI) {
-      return new ErrorHandler('there is noo database', 404);
+      throw new Error('DB_URI is not set');
     }
 
     await mongoose.connect(dbURI, options);

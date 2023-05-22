@@ -1,6 +1,6 @@
 import connectDatabase from './src/config/database';
-import app from './src/app';
 import dotenv from 'dotenv';
+import app from './src/app';
 
 //handeling uncaught exceptions
 process.on('uncaughtException', (err) => {

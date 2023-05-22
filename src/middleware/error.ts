@@ -1,4 +1,5 @@
-import { Request, Response } from 'express';
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { NextFunction, Request, Response } from 'express';
 import ErrorHandler from '../utils/errorHandler';
 import { Error, MongooseError } from 'mongoose';
 
@@ -6,7 +7,13 @@ interface IError extends ErrorHandler {
   code?: number;
 }
 
-const errorMiddleware = (err: IError, req: Request, res: Response) => {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const errorMiddleware = (
+  err: IError,
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   err.statusCode = err.statusCode || 500;
   err.message = err.message || 'Internal Server Error';
 
