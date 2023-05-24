@@ -1,4 +1,10 @@
-#1. create config.env file inside congig folder with following credentials
+## After Installing
 
+### Config.env
+
+create config.env in src->config with following credentials:
+
+```bash
 DB_URI= 'here gores databasae url'
 PORT= 3000
+```
