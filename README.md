@@ -8,3 +8,7 @@ create config.env in src->config with following credentials:
 DB_URI= 'here gores databasae url'
 PORT= 3000
 ```
+
+### Package.json
+
+if needed change package name and its description in package.json
