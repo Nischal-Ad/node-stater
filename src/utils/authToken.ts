@@ -10,26 +10,24 @@ const authToken = (
   statusCode: number
 ) => {
   const JWT_SECRET = process.env.JWT_SECRET
+  const expiresIn = process.env.JWT_EXPIRES_IN
 
   if (!JWT_SECRET) {
     throw new Error('jwt secret key is missing')
   }
 
-  if (!process.env.JWT_COOKIE_EXPIRES_IN) {
+  if (!expiresIn) {
     throw new Error('jwt cookie expire value is missing')
   }
 
   const token = jwt.sign(user._id, JWT_SECRET, {
-    expiresIn: process.env.JWT_EXPIRES_IN,
+    expiresIn,
   })
 
   res
     .status(statusCode)
     .cookie('token', token, {
-      expires: new Date(
-        Date.now() +
-          parseInt(process.env.JWT_COOKIE_EXPIRES_IN) * 24 * 60 * 60 * 1000
-      ),
+      expires: new Date(Date.now() + parseInt(expiresIn) * 24 * 60 * 60 * 1000),
 
       httpOnly: true,
       secure: req.secure || req.headers['x-forwarded-proto'] === 'https',

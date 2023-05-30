@@ -1,7 +1,9 @@
 import { InferSchemaType, Schema, model } from 'mongoose'
 import validator from 'validator'
 
-export type TUser = InferSchemaType<typeof userSchema>
+export type TUser = InferSchemaType<typeof userSchema> & {
+  _id: string
+}
 
 const userSchema = new Schema({
   name: {
@@ -21,6 +23,14 @@ const userSchema = new Schema({
     type: String,
     required: [true, 'please enter your password'],
     select: false,
+  },
+  role: {
+    type: String,
+    enum: {
+      values: ['student', 'teacher'] as const,
+      message: 'please enter a valid role',
+    },
+    default: 'student',
   },
 })
 

@@ -11,7 +11,6 @@ FRONTEND_URL= 'here goes frontend url'
 
 JWT_SECRET= 'here goes jwt secret key'
 JWT_EXPIRES_IN= '7d'
-JWT_COOKIE_EXPIRES_IN= 2
 ```
 
 ### Config.env
