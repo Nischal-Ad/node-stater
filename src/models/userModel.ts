@@ -1,7 +1,7 @@
 import { InferSchemaType, Schema, model } from 'mongoose'
 import validator from 'validator'
 
-type TUser = InferSchemaType<typeof userSchema>
+export type TUser = InferSchemaType<typeof userSchema>
 
 const userSchema = new Schema({
   name: {
