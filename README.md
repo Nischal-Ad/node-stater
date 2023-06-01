@@ -13,9 +13,9 @@ JWT_SECRET= 'here goes jwt secret key'
 JWT_EXPIRES_IN= '7d'
 ```
 
-### Config.env
+### CORS
 
-if needed change cors origin setting to listen in specific url in src->app.ts
+if you need  to listen in specific url by cors than in above config file specify your frontend url to FRONTEND_URL. if not cors will listen to all url
 
 ### Package.json
 
