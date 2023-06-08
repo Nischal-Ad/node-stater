@@ -17,6 +17,15 @@ JWT_EXPIRES_IN= '7d'
 
 if you need  to listen in specific url by cors than in above config file specify your frontend url to FRONTEND_URL. if not cors will listen to all url
 
+
+or if it doesnot work than replace cors origin code with this:
+
+```bash
+origin: process.env.FRONTEND_URL
+? process.env.FRONTEND_URL
+: 'http://localhost:5173',
+```
+
 ### Package.json
 
 if needed change package name and its description in package.json
