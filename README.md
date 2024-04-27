@@ -1,3 +1,9 @@
+## Install
+
+```
+npx degit Nischal-Ad/node-stater backend
+```
+
 ## After Installing
 
 ### Config.env
