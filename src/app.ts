@@ -1,20 +1,19 @@
 import express from 'express'
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
-import Error from '@Middleware/error'
-import ErrorHandler from '@Utils/errorHandler'
+import Error, { DispalyError } from '@Utils/errorHandler'
 import { rateLimit } from 'express-rate-limit'
 import helmet from 'helmet'
 import mongoSanitize from 'express-mongo-sanitize'
 import compression from 'compression'
 import hpp from 'hpp'
 import xss from 'xss-clean'
+import 'express-async-errors'
 
 //routes
 import UserRouter from '@Routes/userRoute'
 
 const app = express()
-app.enable('trust proxy')
 
 // app.use(express.json())
 app.use(express.json({ limit: '1mb' }))
@@ -66,8 +65,8 @@ app.get('/', (req, res) =>
 app.use('/api/v1', UserRouter)
 
 //if no api url matched this api fires
-app.all('*', (req, res, next) => {
-  next(new ErrorHandler(`Can't find ${req.originalUrl} on this server!`, 404))
+app.all('*', (req) => {
+  DispalyError(`Can't find ${req.originalUrl} on this server!`, 404)
 })
 
 //middleware for error

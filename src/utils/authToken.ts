@@ -13,11 +13,11 @@ const authToken = (
   const expiresIn = process.env.JWT_EXPIRES_IN
 
   if (!JWT_SECRET) {
-    throw new Error('jwt secret key is missing')
+    throw 'jwt secret key is missing'
   }
 
   if (!expiresIn) {
-    throw new Error('jwt cookie expire value is missing')
+    throw 'jwt cookie expire value is missing'
   }
 
   const token = jwt.sign(user._id, JWT_SECRET, {

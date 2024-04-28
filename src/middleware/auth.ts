@@ -1,4 +1,4 @@
-import ErrorHandler from '@Utils/errorHandler'
+import { DispalyError } from '@Utils/errorHandler'
 import catchAsync from './catchAsync'
 import jwt from 'jsonwebtoken'
 import userModel, { TUser } from '@Models/userModel'
@@ -21,24 +21,26 @@ export const isAuth = catchAsync(async (req, res, next) => {
   }
 
   if (!token) {
-    return next(new ErrorHandler('You are not logged in!', 401))
+    DispalyError('You are not logged in!', 401)
   }
 
   const decoded = jwt.verify(token, JWT_SECRET)
 
-  const currentUser = await userModel.findById((decoded as jwt.JwtPayload).id)
-  if (!currentUser) {
-    return next(new ErrorHandler('user doesnot exist', 401))
+  const currentUser = await userModel
+    .findById((decoded as jwt.JwtPayload).id)
+    .lean()
+  if (!currentUser || currentUser === null) {
+    DispalyError('user doesnot exist', 401)
   }
 
-  req.user = currentUser
+  req.user = currentUser as TUser
   next()
 })
 
 export const roles = (...roles: Pick<TUser, 'role'>['role'][]) => {
   return catchAsync(async (req, res, next) => {
     if (!req.user || !roles.includes(req.user.role)) {
-      return next(new ErrorHandler('sorry you cannot access this page', 403))
+      DispalyError('sorry you cannot access this page', 403)
     }
     next()
   })

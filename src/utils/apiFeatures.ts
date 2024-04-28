@@ -1,109 +1,97 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Query, FilterQuery } from 'mongoose'
+import _ from 'lodash'
 
-interface IQueryString {
-  page: number
-  limit: number
-  sort: string
-  fields: string
-  nolimit: boolean
+interface IReusableMongoose {
+  mongooseQuery: any
+  queryObject: any
+  searchFields: string[]
 }
 
-class ApiFeatures {
-  query: Query<any[], any, any, 'find'>
-  queryString: Partial<IQueryString>
-  total: number
-  totalPages?: number
-  page?: number
+const reusableMongoose = ({
+  mongooseQuery,
+  queryObject,
+  searchFields,
+}: IReusableMongoose) => {
+  let clonedQueryObject = _.cloneDeep(queryObject)
 
-  constructor(
-    query: Query<any[], any, any, 'find'>,
-    queryString: Partial<IQueryString>
-  ) {
-    this.query = query
-    this.queryString = queryString
-    this.total = 0
-    this.page = 0
-    this.totalPages = 0
-  }
+  delete clonedQueryObject.pagination_limit
+  delete clonedQueryObject.pagination_page
+  delete clonedQueryObject.search
+  delete clonedQueryObject.showCount
+  delete clonedQueryObject.sort
+  delete clonedQueryObject.no_pagination_limit
 
-  async filter() {
-    const queryObj: { [key: string]: any } = { ...this.queryString }
-    const excludedFields = ['page', 'sort', 'limit', 'fields']
-    excludedFields.forEach((el) => delete queryObj[el])
+  // Appending all query strings to mongooseQuery
 
-    const collectionFields = Object.keys(this.query.model.schema.paths)
-    Object.keys(queryObj).forEach((key) => {
-      if (!collectionFields.includes(key)) {
-        delete queryObj[key]
-      }
-    })
+  clonedQueryObject = JSON.stringify(clonedQueryObject)
+  const stringiFiedData = clonedQueryObject.replace(
+    /\b(gt|gte|lt|lte)\b/g,
+    (match: any) => {
+      return `$${match}`
+    }
+  )
+  clonedQueryObject = JSON.parse(stringiFiedData)
+  mongooseQuery = mongooseQuery.find(clonedQueryObject)
 
-    const query: FilterQuery<any> = Object.keys(queryObj).reduce((acc, key) => {
-      if (typeof queryObj[key] === 'string') {
-        acc[key] = { $regex: queryObj[key], $options: 'i' }
-      } else {
-        acc[key] = queryObj[key]
-      }
-      return acc
-    }, {} as { [key: string]: any })
-
-    let queryStr = JSON.stringify(query)
-    queryStr = queryStr.replace(
-      /\b(gte|gt|lte|lt|eq)\b/g,
-      (match) => `$${match}`
+  // Working with search
+  if (queryObject.search) {
+    const searchArray: any[] = []
+    searchFields.map((el) =>
+      searchArray.push({
+        [el]: { $regex: new RegExp(queryObject.search, 'i') },
+      })
     )
-    this.query = this.query.find(JSON.parse(queryStr))
-
-    this.total = await this.query.model.countDocuments(JSON.parse(queryStr))
-
-    return this
+    mongooseQuery = mongooseQuery.find({ $or: searchArray })
   }
 
-  sort() {
-    if (this.queryString.sort) {
-      const sortBy = this.queryString.sort.split(',').join(' ')
-      this.query = this.query.sort(sortBy)
-    } else {
-      this.query = this.query.sort('-createdAt')
-    }
+  let pagination_limit
+  let pagination_page
 
-    return this
+  //working on sort
+  if (queryObject.sort) {
+    const sortBy = queryObject.sort.split(',').join(' ')
+    mongooseQuery = mongooseQuery.sort(sortBy)
+  } else {
+    mongooseQuery = mongooseQuery.sort('-createdAt')
   }
 
-  // limitFields() {
-  //   if (this.queryString.fields) {
-  //     const fields = this.queryString.fields.split(',').join(' ')
-  //     this.query = this.query.select(fields)
-  //   } else {
-  //     this.query = this.query.select('-__v')
-  //   }
+  // Working on limits
+  if (!queryObject.no_pagination_limit) {
+    // Limiting too much data...
+    queryObject.pagination_page ? queryObject.pagination_page : 1
+    queryObject.pagination_limit ? queryObject.pagination_limit : 10
 
-  //   return this
-  // }
-
-  paginate() {
-    const page = this.queryString.page || 1
-    const limit = this.queryString.limit || 10
-
-    if (this.queryString.nolimit) {
-      this.page = undefined
-      this.totalPages = undefined
-      this.query
-      return this
+    if (
+      queryObject.pagination_page < 1 ||
+      queryObject.pagination_limit < 1 ||
+      queryObject.pagination_page > 100 ||
+      queryObject.pagination_limit > 100
+    ) {
+      throw new Error('Page and limit must be greater than 1 & less than 100')
     }
 
-    if (page < 1 || limit < 1) {
-      throw new Error('Page and limit must be greater than or equal to 1')
-    }
+    mongooseQuery = mongooseQuery
+      .skip(
+        queryObject.pagination_page > 1
+          ? (queryObject.pagination_page - 1) * queryObject.pagination_limit
+          : 0
+      )
+      .limit(queryObject.pagination_limit)
 
-    this.page = +page
-    this.totalPages = Math.ceil(this.total / +limit)
+    pagination_limit = parseInt(queryObject.pagination_limit ?? 0)
+    pagination_page = parseInt(queryObject.pagination_page ?? 0)
+  } else {
+    mongooseQuery
+    pagination_limit = undefined
+    pagination_page = undefined
+  }
 
-    const skip = (page - 1) * limit
-    this.query = this.query.skip(skip).limit(limit)
-
-    return this
+  return {
+    query: mongooseQuery,
+    conditions: mongooseQuery._conditions,
+    pagination_limit,
+    pagination_page,
   }
 }
-export default ApiFeatures
+
+export default reusableMongoose

@@ -1,11 +1,11 @@
 import catchAsync from '@Middleware/catchAsync'
-import ErrorHandler from '@Utils/errorHandler'
+import { DispalyError } from '@Utils/errorHandler'
 
-export const TestUser = catchAsync(async (req, res, next) => {
+export const TestUser = catchAsync(async (req, res) => {
   const user = ['dad', 'rams', 'shyam']
 
-  if (!user.includes('rams')) {
-    return next(new ErrorHandler('user not found ', 404))
+  if (!user.includes('ramss')) {
+    DispalyError('user not found', 404)
   }
   res.status(200).json({
     success: true,
