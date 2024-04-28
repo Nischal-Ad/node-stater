@@ -16,7 +16,8 @@ import UserRouter from '@Routes/userRoute'
 const app = express()
 app.enable('trust proxy')
 
-app.use(express.json())
+// app.use(express.json())
+app.use(express.json({ limit: '1mb' }))
 app.use(helmet())
 app.use(mongoSanitize())
 app.use(compression())
