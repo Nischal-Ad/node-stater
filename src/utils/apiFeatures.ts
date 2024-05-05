@@ -46,6 +46,7 @@ const reusableMongoose = ({
 
   let pagination_limit
   let pagination_page
+  let no_pagination_limit
 
   //working on sort
   if (queryObject.sort) {
@@ -56,7 +57,10 @@ const reusableMongoose = ({
   }
 
   // Working on limits
-  if (!queryObject.no_pagination_limit) {
+  if (
+    !queryObject.no_pagination_limit ||
+    queryObject.no_pagination_limit === 'false'
+  ) {
     // Limiting too much data...
     queryObject.pagination_page ? queryObject.pagination_page : 1
     queryObject.pagination_limit ? queryObject.pagination_limit : 10
@@ -64,7 +68,6 @@ const reusableMongoose = ({
     if (
       queryObject.pagination_page < 1 ||
       queryObject.pagination_limit < 1 ||
-      queryObject.pagination_page > 100 ||
       queryObject.pagination_limit > 100
     ) {
       throw new Error('Page and limit must be greater than 1 & less than 100')
@@ -78,12 +81,14 @@ const reusableMongoose = ({
       )
       .limit(queryObject.pagination_limit)
 
-    pagination_limit = parseInt(queryObject.pagination_limit ?? 0)
-    pagination_page = parseInt(queryObject.pagination_page ?? 0)
+    pagination_limit = parseInt(queryObject.pagination_limit ?? 10)
+    pagination_page = parseInt(queryObject.pagination_page ?? 1)
+    no_pagination_limit = 'false'
   } else {
     mongooseQuery
     pagination_limit = undefined
     pagination_page = undefined
+    no_pagination_limit = 'true'
   }
 
   return {
@@ -91,6 +96,7 @@ const reusableMongoose = ({
     conditions: mongooseQuery._conditions,
     pagination_limit,
     pagination_page,
+    no_pagination_limit,
   }
 }
 

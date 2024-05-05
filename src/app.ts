@@ -1,7 +1,7 @@
 import express from 'express'
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
-import Error, { DispalyError } from '@Utils/errorHandler'
+import Error from '@Utils/errorHandler'
 import { rateLimit } from 'express-rate-limit'
 import helmet from 'helmet'
 import mongoSanitize from 'express-mongo-sanitize'
@@ -11,7 +11,7 @@ import xss from 'xss-clean'
 import 'express-async-errors'
 
 //routes
-import UserRouter from '@Routes/userRoute'
+import AuthRouter from '@Routes/authRoute'
 
 const app = express()
 
@@ -39,7 +39,7 @@ app.use(
 
 // Limit requests from same API
 const limiter = rateLimit({
-  max: 100,
+  max: 500,
   windowMs: 60 * 60 * 1000,
   message: 'Too many requests from this IP, please try again in an hour!',
 })
@@ -50,7 +50,7 @@ app.use(
     // origin: 'http://localhost:5173', // Set the specific origin instead of the wildcard '*'
     origin: process.env.FRONTEND_URL || '*',
     credentials: true, // Enable sending cookies and other credentials
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
   })
 )
 app.get('/', (req, res) =>
@@ -62,11 +62,11 @@ app.get('/', (req, res) =>
     }`
   )
 )
-app.use('/api/v1', UserRouter)
+app.use('/api/v1', AuthRouter)
 
 //if no api url matched this api fires
 app.all('*', (req) => {
-  DispalyError(`Can't find ${req.originalUrl} on this server!`, 404)
+  throw `Can't find ${req.originalUrl} on this server!`
 })
 
 //middleware for error

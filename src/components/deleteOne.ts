@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import catchAsync from '@Middleware/catchAsync'
-import { DispalyError } from '@Utils/errorHandler'
 import { Model } from 'mongoose'
 
 const Delete = (Model: Model<any>, ModelFor: string) =>
@@ -8,7 +7,7 @@ const Delete = (Model: Model<any>, ModelFor: string) =>
     const data = await Model.findByIdAndDelete(req.params.id)
 
     if (!data) {
-      DispalyError(`No ${ModelFor} found`, 404)
+      throw `No ${ModelFor} found`
     }
 
     res.status(204).json({

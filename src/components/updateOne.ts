@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import catchAsync from '@Middleware/catchAsync'
-import { DispalyError } from '@Utils/errorHandler'
 import { Model } from 'mongoose'
 
 const Update = (Model: Model<any>, ModelFor: string) =>
@@ -11,14 +10,12 @@ const Update = (Model: Model<any>, ModelFor: string) =>
     })
 
     if (!data) {
-      DispalyError(`No ${ModelFor} found`, 404)
+      throw `No ${ModelFor} found`
     }
 
     res.status(200).json({
       status: 'success',
-      data: {
-        data: data,
-      },
+      data,
     })
   })
 

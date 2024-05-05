@@ -1,4 +1,3 @@
-import { DispalyError } from '@Utils/errorHandler'
 import catchAsync from './catchAsync'
 import jwt from 'jsonwebtoken'
 import userModel, { TUser } from '@Models/userModel'
@@ -21,7 +20,7 @@ export const isAuth = catchAsync(async (req, res, next) => {
   }
 
   if (!token) {
-    DispalyError('You are not logged in!', 401)
+    throw 'You are not logged in!'
   }
 
   const decoded = jwt.verify(token, JWT_SECRET)
@@ -30,7 +29,7 @@ export const isAuth = catchAsync(async (req, res, next) => {
     .findById((decoded as jwt.JwtPayload).id)
     .lean()
   if (!currentUser || currentUser === null) {
-    DispalyError('user doesnot exist', 401)
+    throw 'user doesnot exist'
   }
 
   req.user = currentUser as TUser
@@ -40,7 +39,7 @@ export const isAuth = catchAsync(async (req, res, next) => {
 export const roles = (...roles: Pick<TUser, 'role'>['role'][]) => {
   return catchAsync(async (req, res, next) => {
     if (!req.user || !roles.includes(req.user.role)) {
-      DispalyError('sorry you cannot access this page', 403)
+      throw 'sorry you cannot access this page'
     }
     next()
   })
