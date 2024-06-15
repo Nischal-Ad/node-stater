@@ -12,7 +12,7 @@ create config.env in src->config with following credentials:
 
 ```bash
 DB_URI= 'here gores databasae url'
-PORT= 3000
+PORT= 8000
 FRONTEND_URL= 'here goes frontend url'
 
 JWT_SECRET= 'here goes jwt secret key'
