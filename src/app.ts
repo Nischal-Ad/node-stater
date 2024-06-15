@@ -47,9 +47,8 @@ app.use('/api', limiter)
 
 app.use(
   cors({
-    // origin: 'http://localhost:5173', // Set the specific origin instead of the wildcard '*'
-    origin: process.env.FRONTEND_URL || '*',
-    credentials: true, // Enable sending cookies and other credentials
+    origin: ['*'],
+    credentials: true, 
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
   })
 )
