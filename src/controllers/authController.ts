@@ -1,9 +1,9 @@
-import catchAsync from '@Middleware/catchAsync'
 import userModel, { TUser } from '@Models/userModel'
 import authToken from '@Utils/authToken'
 import bcrypt from 'bcryptjs'
+import { Request, Response } from 'express'
 
-export const RegisterUser = catchAsync(async (req, res) => {
+export const RegisterUser = async (req: Request, res: Response) => {
   const { name, email, password, cpassword, role }: TUser = req.body
 
   const user = await userModel.findOne({ email })
@@ -27,9 +27,9 @@ export const RegisterUser = catchAsync(async (req, res) => {
     message: 'user register succesfully',
     user: newUser,
   })
-})
+}
 
-export const LoginUser = catchAsync(async (req, res) => {
+export const LoginUser = async (req: Request, res: Response) => {
   const { email, password }: TUser = req.body
 
   if (!email || !password) {
@@ -42,4 +42,4 @@ export const LoginUser = catchAsync(async (req, res) => {
   }
 
   authToken(req, res, user, 'logged in succesfully', 200)
-})
+}
