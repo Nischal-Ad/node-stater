@@ -1,8 +1,12 @@
-import catchAsync from './catchAsync'
 import jwt from 'jsonwebtoken'
-import userModel, { TUser } from '@Models/userModel'
+import  { TUser } from '@Models/userModel'
+import { NextFunction, Request, Response } from 'express'
 
-export const isAuth = catchAsync(async (req, res, next) => {
+export const isAuth = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   let token
   const JWT_SECRET = process.env.JWT_SECRET
 
@@ -34,13 +38,17 @@ export const isAuth = catchAsync(async (req, res, next) => {
 
   req.user = currentUser as TUser
   next()
-})
+}
 
 export const roles = (...roles: Pick<TUser, 'role'>['role'][]) => {
-  return catchAsync(async (req, res, next) => {
+  return async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
     if (!req.user || !roles.includes(req.user.role)) {
       throw 'sorry you cannot access this page'
     }
     next()
-  })
+  }
 }
