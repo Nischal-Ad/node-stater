@@ -7,7 +7,7 @@
     "build": "rimraf dist && tsc && tsc-alias",
     "prestart": "npm run build",
     "start": "node dist/index.js",
-    "dev": "tsnd --respawn -r tsconfig-paths/register --transpile-only index.ts"
+    "dev": "tsnd -r tsconfig-paths/register --transpile-only index.ts"
   },
   "keywords": [],
   "author": "",
@@ -15,7 +15,6 @@
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "compression": "^1.7.4",
-    "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
@@ -25,6 +24,7 @@
     "helmet": "^7.1.0",
     "hpp": "^0.2.3",
     "jsonwebtoken": "^9.0.0",
+    "moment": "^2.30.1",
     "mongoose": "^7.2.0",
     "path": "^0.12.7",
     "rimraf": "^5.0.1",
