@@ -28,15 +28,7 @@ export const isAuth = async (
   }
 
   const decoded = jwt.verify(token, JWT_SECRET)
-
-  const currentUser = await userModel
-    .findById((decoded as jwt.JwtPayload).id)
-    .lean()
-  if (!currentUser || currentUser === null) {
-    throw 'user doesnot exist'
-  }
-
-  req.user = currentUser as TUser
+  req.user = decoded.user as TUser
   next()
 }
 

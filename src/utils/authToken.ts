@@ -20,24 +20,15 @@ const authToken = (
     throw 'jwt cookie expire value is missing'
   }
 
-  const token = jwt.sign(user._id, JWT_SECRET, {
+  const token = jwt.sign({ user, isAuth: true }, JWT_SECRET, {
     expiresIn,
   })
 
-  res
-    .status(statusCode)
-    .cookie('token', token, {
-      expires: new Date(Date.now() + parseInt(expiresIn) * 24 * 60 * 60 * 1000),
-
-      httpOnly: true,
-      secure: req.secure || req.headers['x-forwarded-proto'] === 'https',
-      sameSite: 'none',
-    })
-    .json({
-      success: true,
-      message,
-      user,
-    })
+  res.status(statusCode).json({
+    success: true,
+    message,
+    token,
+  })
 }
 
 export default authToken
