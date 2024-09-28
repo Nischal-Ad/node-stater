@@ -1,12 +1,10 @@
 import { InferSchemaType, Schema, model } from 'mongoose'
 import validator from 'validator'
 import _ from 'lodash'
-import bcrypt from 'bcryptjs'
 
 export type TUser = Partial<InferSchemaType<typeof userSchema>> & {
   _id: string
   cpassword: string
-  comparePassword: (password: string) => Promise<boolean>
 }
 
 const userSchema = new Schema(
@@ -47,9 +45,5 @@ const userSchema = new Schema(
     timestamps: true,
   }
 )
-
-userSchema.methods.comparePassword = async function (password: string) {
-  return await bcrypt.compare(password, this.password)
-}
 
 export default model<TUser>('User', userSchema)
