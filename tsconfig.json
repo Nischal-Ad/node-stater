@@ -5,7 +5,6 @@
     "baseUrl": ".",
     "paths": {
       "@Config/*": ["src/config/*"],
-      "@Components/*": ["src/components/*"],
       "@Controllers/*": ["src/controllers/*"],
       "@Middleware/*": ["src/middleware/*"],
       "@Models/*": ["src/models/*"],
