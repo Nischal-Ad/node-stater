@@ -1,6 +1,5 @@
 import express from 'express'
 import cors from 'cors'
-import cookieParser from 'cookie-parser'
 import Error from '@Utils/errorHandler'
 import { rateLimit } from 'express-rate-limit'
 import helmet from 'helmet'
@@ -26,7 +25,6 @@ app.use(
     extended: true,
   })
 )
-app.use(cookieParser())
 
 // Prevent parameter pollution. look yt if confuse
 app.use(
